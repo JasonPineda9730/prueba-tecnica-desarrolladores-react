@@ -3,9 +3,12 @@ import { Badge, Button, Col, Container, Image, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faStar } from '@fortawesome/free-solid-svg-icons';
+import ItemQuantitySelector from '../ItemQuantitySelector/ItemQuantitySelector.jsx';
+import AddItemButton from '../AddItemButton/AddItemButton.jsx';
 
 function ItemDetail({ product }) {
   const [imageFailed, setImageFailed] = useState(false);
+  const [quantity, setQuantity] = useState(1);
   const image = product.images?.[0] || product.thumbnail;
   return (
     <Container className="detail-section py-5">
@@ -23,6 +26,10 @@ function ItemDetail({ product }) {
           <p className="detail-description">{product.description || 'Descubre este producto de TechStore.'}</p>
           <p className="detail-price">${Number(product.price || 0).toFixed(2)}</p>
           {Number.isFinite(Number(product.stock)) && <p className="stock-line">{product.stock > 0 ? `${product.stock} unidades disponibles` : 'Agotado'}</p>}
+          <div className="detail-purchase-controls">
+            <ItemQuantitySelector stock={product.stock} onQuantityChange={setQuantity} />
+            <AddItemButton product={product} quantity={quantity} />
+          </div>
           <Button as={Link} to="/" variant="outline-primary" className="mt-3">Seguir explorando</Button>
         </Col>
       </Row>
