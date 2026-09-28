@@ -39,12 +39,12 @@ npm test
 
 ## Funcionalidades
 
-- Catálogo real con filtro por categoría, estados de carga, error y sin resultados.
+- Catálogo real enfocado en smartphones, laptops, tablets y accesorios móviles, con filtro tecnológico y estados de carga, error y sin resultados.
 - Vista de detalle con imagen tolerante a errores, descripción, rating y stock.
 - Selector de unidades local al detalle; valida cantidades mínimas y stock disponible.
 - Carrito global sin duplicados, con controles de stock, subtotales y total.
-- Checkout con resumen, eliminación individual, opción de vaciar y estado de carrito vacío.
-- Compra simulada con identificador de orden y confirmación; no procesa pagos ni usa backend.
+- Carrito con resumen, eliminación individual, opción de vaciar y estado vacío.
+- Checkout con validación de nombre, correo y dirección; genera un identificador de pedido y vacía el carrito al confirmar. No procesa pagos ni utiliza backend.
 - Navegación responsive, diseño adaptable y controles accesibles con etiquetas y textos alternativos.
 
 ## API
@@ -56,7 +56,7 @@ El servicio centralizado `src/services/productsApi.js` consume DummyJSON mediant
 - `GET https://dummyjson.com/products/category/{category}`: catálogo filtrado.
 - `GET https://dummyjson.com/products/category-list`: opciones del filtro.
 
-El servicio valida las respuestas y distingue los fallos HTTP, de red y de formato; las solicitudes de componentes se pueden cancelar al abandonar una vista.
+El catálogo principal solicita en paralelo las cuatro categorías tecnológicas disponibles y las combina por ID. El servicio valida las respuestas y distingue los fallos HTTP, de red y de formato; las solicitudes de componentes se pueden cancelar al abandonar una vista.
 
 ## Estructura
 
@@ -67,6 +67,7 @@ src/
 │   ├── Brief/
 │   ├── CartWidget/
 │   ├── Checkout/
+│   ├── CheckoutForm/
 │   ├── Item/
 │   ├── ItemDetail/
 │   ├── ItemDetailContainer/
@@ -75,22 +76,26 @@ src/
 │   ├── ItemQuantitySelector/
 │   └── NavBar/
 ├── context/CartContext.jsx
-├── pages/                 # Home, detalle y checkout
+├── pages/                 # Home, detalle, carrito y checkout
 ├── services/productsApi.js
+├── utils/                 # validación del checkout y etiquetas de categorías
 ├── styles/app.css
 ├── App.jsx
 └── main.jsx
 
-tests/cartLogic.test.js
+tests/                     # lógica del carrito y validación de checkout
 ```
+
+En `src/pages/` se encuentran `Home.jsx`, `ProductDetailPage.jsx`, `CartPage.jsx` y `CheckoutPage.jsx`.
 
 ## Arquitectura y decisiones
 
 - **Pages** conectan rutas con la experiencia de catálogo, detalle y checkout.
+- Las rutas `/`, `/product/:id`, `/cart` y `/checkout` muestran catálogo, detalle, resumen del carrito y formulario de pedido.
 - **Containers** coordinan peticiones y estados asíncronos; `ItemList` e `Item` presentan el catálogo sin lógica de red.
 - **ItemQuantitySelector** mantiene el borrador de cantidad local. La cantidad solo llega al carrito cuando el usuario confirma agregar.
 - **CartContext** centraliza `cartItems`, `addItem`, `removeItem`, `clearCart`, `getItemQuantity`, `totalQuantity` y `total`. Los productos se identifican por ID; agregar el mismo producto aumenta su cantidad y se rechazan cantidades inválidas o superiores al stock. Cantidad total y monto se derivan del estado, y el resumen reutiliza el total del contexto.
-- El checkout simulado valida el carrito, crea un número de orden de demostración y lo vacía. No hay servidor ni persistencia entre recargas.
+- El checkout valida nombre, correo y dirección antes de confirmar; crea un número de pedido de demostración y vacía el carrito. No solicita información bancaria, procesa pagos ni persiste datos.
 - La interfaz utiliza componentes reales de React-Bootstrap, Bootstrap y estilos propios acotados para la identidad visual y el diseño móvil.
 
 ## Componentes obligatorios

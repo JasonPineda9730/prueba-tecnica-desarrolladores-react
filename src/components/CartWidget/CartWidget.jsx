@@ -7,8 +7,9 @@ import { CartContext } from '../../context/CartContext.jsx';
 
 function CartWidget() {
   const { totalQuantity } = useContext(CartContext);
+  const itemLabel = totalQuantity === 1 ? 'artículo' : 'artículos';
   return (
-    <Button as={Link} to="/checkout" variant="light" className="cart-widget" aria-label={`Carrito, ${totalQuantity} productos`}>
+    <Button as={Link} to="/cart" variant="light" className="cart-widget" aria-label={`Carrito, ${totalQuantity} ${itemLabel}`}>
       <FontAwesomeIcon icon={faCartShopping} aria-hidden="true" />
       <span>Carrito</span>
       <Badge bg="primary" pill>{totalQuantity}</Badge>

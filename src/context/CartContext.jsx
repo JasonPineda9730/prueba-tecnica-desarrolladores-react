@@ -6,11 +6,18 @@ export function CartProvider({ children }) {
   const [cartItems, setCartItems] = useState([]);
   const addItem = useCallback((product, quantity = 1) => {
     const amount = Number(quantity);
-    const stock = Number(product?.stock);
-    if (!product?.id || !Number.isInteger(amount) || amount < 1) {
+    const stock = product?.stock == null || product.stock === '' ? Infinity : Number(product.stock);
+    if (product?.id == null || !Number.isInteger(amount) || amount < 1) {
       return { success: false, message: 'Selecciona una cantidad válida.' };
     }
+    if (!Number.isFinite(Number(product.price)) || Number(product.price) < 0) {
+      return { success: false, message: 'No podemos agregar un producto con precio inválido.' };
+    }
+    if (Number.isNaN(stock) || stock < 0) {
+      return { success: false, message: 'No podemos confirmar el stock de este producto.' };
+    }
     const existingItem = cartItems.find((item) => item.id === product.id);
+    // El límite se comprueba contra lo que ya está en el carrito, no solo contra el nuevo incremento.
     const nextQuantity = (existingItem?.quantity || 0) + amount;
     if (Number.isFinite(stock) && nextQuantity > stock) {
       return { success: false, message: 'No hay suficiente stock para esa cantidad.' };

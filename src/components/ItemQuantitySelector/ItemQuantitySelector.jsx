@@ -5,7 +5,11 @@ import { faMinus, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 function ItemQuantitySelector({ stock, onQuantityChange }) {
   const [quantity, setQuantity] = useState(1);
-  const maximum = Number.isFinite(Number(stock)) ? Math.max(0, Number(stock)) : Infinity;
+  const maximum = stock == null || stock === ''
+    ? Infinity
+    : Number.isFinite(Number(stock))
+      ? Math.max(0, Number(stock))
+      : Infinity;
 
   function updateQuantity(nextQuantity) {
     const next = Math.min(maximum, Math.max(1, nextQuantity));

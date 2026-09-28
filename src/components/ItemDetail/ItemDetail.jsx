@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faStar } from '@fortawesome/free-solid-svg-icons';
 import ItemQuantitySelector from '../ItemQuantitySelector/ItemQuantitySelector.jsx';
 import AddItemButton from '../AddItemButton/AddItemButton.jsx';
+import { getCategoryLabel } from '../../utils/productLabels.js';
 
 function ItemDetail({ product }) {
   const [imageFailed, setImageFailed] = useState(false);
@@ -20,7 +21,7 @@ function ItemDetail({ product }) {
           </div>
         </Col>
         <Col lg={6}>
-          <Badge bg="light" text="dark" className="product-category detail-category">{product.category || 'Tecnología'}</Badge>
+          <Badge bg="light" text="dark" className="product-category detail-category">{getCategoryLabel(product.category)}</Badge>
           <h1 className="detail-title mt-3">{product.title || 'Producto sin nombre'}</h1>
           {Number.isFinite(Number(product.rating)) && <p className="rating-line"><FontAwesomeIcon icon={faStar} aria-hidden="true" /> {Number(product.rating).toFixed(1)} <span className="text-secondary">de 5</span></p>}
           <p className="detail-description">{product.description || 'Descubre este producto de TechStore.'}</p>

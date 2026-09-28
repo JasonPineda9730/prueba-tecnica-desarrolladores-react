@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Alert, Col, Form, Row, Spinner } from 'react-bootstrap';
-import { getProductCategories, getProducts, getProductsByCategory } from '../../services/productsApi.js';
+import { Alert, Button, Col, Form, Row, Spinner } from 'react-bootstrap';
+import { getProductCategories, getProductsByCategory, getTechnologyProducts } from '../../services/productsApi.js';
+import { getCategoryLabel } from '../../utils/productLabels.js';
 import ItemList from '../ItemList/ItemList.jsx';
 
 function ItemListContainer({ greeting, category, onCategoryChange }) {
@@ -9,6 +10,8 @@ function ItemListContainer({ greeting, category, onCategoryChange }) {
   const [loading, setLoading] = useState(true);
   const [categoryError, setCategoryError] = useState('');
   const [error, setError] = useState('');
+  const [retryProducts, setRetryProducts] = useState(0);
+  const [retryCategories, setRetryCategories] = useState(0);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -16,8 +19,10 @@ function ItemListContainer({ greeting, category, onCategoryChange }) {
       setLoading(true);
       setError('');
       try {
-        const data = category ? await getProductsByCategory(category, { signal: controller.signal }) : await getProducts({ signal: controller.signal });
-        setProducts(data);
+        const data = category
+          ? await getProductsByCategory(category, { signal: controller.signal })
+          : await getTechnologyProducts({ signal: controller.signal });
+        if (!controller.signal.aborted) setProducts(data);
       } catch (requestError) {
         if (requestError.name !== 'AbortError') setError(requestError.message);
       } finally {
@@ -26,15 +31,20 @@ function ItemListContainer({ greeting, category, onCategoryChange }) {
     }
     loadProducts();
     return () => controller.abort();
-  }, [category]);
+  }, [category, retryProducts]);
 
   useEffect(() => {
     const controller = new AbortController();
-    getProductCategories({ signal: controller.signal }).then(setCategories).catch((requestError) => {
-      if (requestError.name !== 'AbortError') setCategoryError('No fue posible cargar las categorías.');
-    });
+    setCategoryError('');
+    getProductCategories({ signal: controller.signal })
+      .then((data) => {
+        if (!controller.signal.aborted) setCategories(data);
+      })
+      .catch((requestError) => {
+        if (requestError.name !== 'AbortError') setCategoryError('No fue posible cargar las categorías.');
+      });
     return () => controller.abort();
-  }, []);
+  }, [retryCategories]);
 
   return (
     <section aria-labelledby="catalog-title">
@@ -45,20 +55,32 @@ function ItemListContainer({ greeting, category, onCategoryChange }) {
           <p className="text-secondary mb-0">Tecnología seleccionada para hacer más cada día.</p>
         </Col>
         <Col xs={12} sm="auto">
-          <Form.Group controlId="product-category">
-            <Form.Label className="visually-hidden">Filtrar por categoría</Form.Label>
-            <Form.Select value={category || ''} onChange={(event) => onCategoryChange(event.target.value)}>
-              <option value="">Todas las categorías</option>
-              {categories.map((item) => <option value={item} key={item}>{item.replaceAll('-', ' ')}</option>)}
+          <Form.Group>
+            <Form.Label htmlFor="product-category">Filtrar por categoría tecnológica</Form.Label>
+            <Form.Select id="product-category" value={category || ''} onChange={(event) => onCategoryChange(event.target.value)}>
+              <option value="">Toda la tecnología</option>
+              {categories.map((item) => <option value={item} key={item}>{getCategoryLabel(item)}</option>)}
             </Form.Select>
           </Form.Group>
-          {categoryError && <span className="small text-secondary" role="status">{categoryError}</span>}
+          {categoryError && (
+            <div className="small text-danger mt-2" role="status">
+              {categoryError}{' '}
+              <Button variant="link" className="p-0 align-baseline" onClick={() => setRetryCategories((attempt) => attempt + 1)}>
+                Reintentar
+              </Button>
+            </div>
+          )}
         </Col>
       </Row>
       {loading ? (
         <div className="loading-state" role="status" aria-live="polite"><Spinner animation="border" variant="primary" aria-hidden="true" /><span>Cargando productos...</span></div>
       ) : error ? (
-        <Alert variant="danger" className="empty-state">{error}</Alert>
+        <Alert variant="danger" className="empty-state">
+          <p>{error}</p>
+          <Button variant="outline-danger" onClick={() => setRetryProducts((attempt) => attempt + 1)}>
+            Reintentar
+          </Button>
+        </Alert>
       ) : (
         <ItemList products={products} />
       )}

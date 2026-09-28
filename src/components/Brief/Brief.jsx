@@ -17,7 +17,7 @@ function Brief() {
           ))}
         </ListGroup>
         <div className="summary-total"><span>Total</span><strong>${total.toFixed(2)}</strong></div>
-        <p className="small text-secondary mt-3 mb-0">Impuestos y envío calculados en esta compra de demostración.</p>
+        <p className="small text-secondary mt-3 mb-0">Resumen de esta compra de demostración.</p>
       </Card.Body>
     </Card>
   );

@@ -3,6 +3,7 @@ import { Button, Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { getCategoryLabel } from '../../utils/productLabels.js';
 
 function Item({ product }) {
   const [imageFailed, setImageFailed] = useState(false);
@@ -18,12 +19,12 @@ function Item({ product }) {
         )}
       </div>
       <Card.Body className="d-flex flex-column p-4">
-        <span className="product-category mb-2">{product.category || 'Tecnología'}</span>
+        <span className="product-category mb-2">{getCategoryLabel(product.category)}</span>
         <Card.Title className="product-card__title">{product.title || 'Producto sin nombre'}</Card.Title>
         <div className="d-flex align-items-center justify-content-between gap-2 mt-auto pt-3">
           <span className="product-price">${Number(product.price || 0).toFixed(2)}</span>
           <Button as={Link} to={`/product/${product.id}`} variant="outline-primary" size="sm">
-            Ver más <FontAwesomeIcon icon={faArrowRight} className="ms-1" aria-hidden="true" />
+            Ver detalle <FontAwesomeIcon icon={faArrowRight} className="ms-1" aria-hidden="true" />
           </Button>
         </div>
       </Card.Body>

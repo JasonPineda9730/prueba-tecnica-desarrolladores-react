@@ -1,13 +1,22 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { Alert, Container } from 'react-bootstrap';
+import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
+import { Alert, Button, Container } from 'react-bootstrap';
 import NavBar from './components/NavBar/NavBar.jsx';
 import { CartProvider } from './context/CartContext.jsx';
 import Home from './pages/Home.jsx';
 import ProductDetailPage from './pages/ProductDetailPage.jsx';
 import CheckoutPage from './pages/CheckoutPage.jsx';
+import CartPage from './pages/CartPage.jsx';
 
 function NotFound() {
-  return <Container className="py-5"><Alert variant="light" className="empty-state"><h1 className="h4">Esta página no está disponible</h1><p className="mb-0">Prueba volver al inicio para seguir explorando.</p></Alert></Container>;
+  return (
+    <Container className="py-5">
+      <Alert variant="light" className="empty-state">
+        <h1 className="h4">Esta página no está disponible</h1>
+        <p>Prueba volver al inicio para seguir explorando.</p>
+        <Button as={Link} to="/" variant="primary">Volver al catálogo</Button>
+      </Alert>
+    </Container>
+  );
 }
 
 function App() {
@@ -19,6 +28,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/product/:id" element={<ProductDetailPage />} />
+            <Route path="/cart" element={<CartPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

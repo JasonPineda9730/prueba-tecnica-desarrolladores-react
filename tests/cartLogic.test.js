@@ -52,6 +52,15 @@ test('rejects invalid quantity and stock overflow', () => {
   assert.equal(cart.cartItems.length, 0);
 });
 
+test('checks available stock including the product quantity already in the cart', () => {
+  const cart = createCart();
+  const product = { id: 5, price: 12, stock: 3 };
+
+  assert.equal(cart.addItem(product, 2).success, true);
+  assert.equal(cart.addItem(product, 2).success, false);
+  assert.equal(cart.getItemQuantity(5), 2);
+});
+
 test('removes one product and calculates quantity and total', () => {
   const cart = createCart();
   cart.addItem({ id: 1, price: 12.5, stock: 5 }, 2);
@@ -72,4 +81,18 @@ test('clears all cart items and returns empty totals', () => {
   assert.deepEqual(cart.cartItems, []);
   assert.equal(cart.totalQuantity, 0);
   assert.equal(cart.total, 0);
+});
+
+test('allows valid quantities when the API does not provide stock', () => {
+  const cart = createCart();
+
+  assert.equal(cart.addItem({ id: 9, price: 15 }, 2).success, true);
+  assert.equal(cart.getItemQuantity(9), 2);
+});
+
+test('rejects products with invalid prices to keep checkout totals numeric', () => {
+  const cart = createCart();
+
+  assert.equal(cart.addItem({ id: 10, price: 'not-a-price', stock: 3 }, 1).success, false);
+  assert.deepEqual(cart.cartItems, []);
 });

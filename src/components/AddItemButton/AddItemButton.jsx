@@ -8,6 +8,7 @@ function AddItemButton({ product, quantity }) {
   const { addItem } = useContext(CartContext);
   const [feedback, setFeedback] = useState('');
   const [isError, setIsError] = useState(false);
+  const stockLimit = product?.stock == null || product.stock === '' ? Infinity : Number(product.stock);
 
   useEffect(() => {
     if (!feedback) return undefined;
@@ -23,7 +24,7 @@ function AddItemButton({ product, quantity }) {
 
   return (
     <div className="add-item-action">
-      <Button variant="primary" size="lg" onClick={handleAdd} disabled={!product || quantity < 1 || quantity > product.stock}>
+      <Button variant="primary" size="lg" onClick={handleAdd} disabled={!product || quantity < 1 || (Number.isFinite(stockLimit) && quantity > stockLimit)}>
         <FontAwesomeIcon icon={faCartPlus} className="me-2" aria-hidden="true" />Agregar al carrito
       </Button>
       {feedback && <Alert variant={isError ? 'danger' : 'success'} className="add-feedback mb-0" role="status">{feedback}</Alert>}

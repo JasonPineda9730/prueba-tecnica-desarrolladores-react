@@ -15,7 +15,7 @@ function NavBar() {
         <Navbar.Toggle aria-controls="store-navigation" aria-label="Abrir menú" />
         <Navbar.Collapse id="store-navigation">
           <Nav className="ms-auto align-items-lg-center gap-lg-3">
-            <Nav.Link as={Link} to="/" className="home-link">Home</Nav.Link>
+            <Nav.Link as={Link} to="/" className="home-link">Catálogo</Nav.Link>
             <CartWidget />
           </Nav>
         </Navbar.Collapse>
