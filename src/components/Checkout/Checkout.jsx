@@ -2,7 +2,7 @@ import { useContext, useState } from 'react';
 import { Alert, Button, Card, Col, Image, ListGroup, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faCartShopping, faCircleCheck, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { CartContext } from '../../context/CartContext.jsx';
 import Brief from '../Brief/Brief.jsx';
 
@@ -22,7 +22,7 @@ function Checkout() {
     return (
       <Card className="success-card border-0 text-center">
         <Card.Body className="p-5">
-          <span className="success-check" aria-hidden="true">✓</span>
+          <span className="success-check" aria-hidden="true"><FontAwesomeIcon icon={faCircleCheck} /></span>
           <h2 className="h3 mt-3">¡Compra realizada correctamente!</h2>
           <p className="text-secondary">Tu orden <strong>#{orderId}</strong> quedó registrada en esta demostración.</p>
           <Button as={Link} to="/" variant="primary" className="mt-2">Volver al catálogo</Button>
@@ -35,7 +35,7 @@ function Checkout() {
     return (
       <Card className="empty-cart border-0 text-center">
         <Card.Body className="p-5">
-          <span className="empty-cart-icon" aria-hidden="true">∅</span>
+          <span className="empty-cart-icon" aria-hidden="true"><FontAwesomeIcon icon={faCartShopping} /></span>
           <h2 className="h4 mt-3">Tu carrito está esperando algo increíble</h2>
           <p className="text-secondary">Explora el catálogo y agrega tus productos favoritos.</p>
           <Button as={Link} to="/" variant="primary" className="mt-2">Volver al catálogo</Button>

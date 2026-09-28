@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { Container } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faStar } from '@fortawesome/free-solid-svg-icons';
 import ItemListContainer from '../components/ItemListContainer/ItemListContainer.jsx';
 
 function Home() {
@@ -17,7 +19,8 @@ function Home() {
           <div className="hero-art" aria-hidden="true">
             <div className="hero-orbit hero-orbit--one" /><div className="hero-orbit hero-orbit--two" />
             <div className="hero-device hero-device--back" /><div className="hero-device hero-device--front"><span>TS</span></div>
-            <div className="hero-spark hero-spark--one">✦</div><div className="hero-spark hero-spark--two">✧</div>
+            <FontAwesomeIcon icon={faStar} className="hero-spark hero-spark--one" />
+            <FontAwesomeIcon icon={faStar} className="hero-spark hero-spark--two" />
           </div>
         </Container>
       </section>
